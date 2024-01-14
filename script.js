@@ -17,9 +17,6 @@ let overlayPosition = { x: 50, y: 50 };
 let isDragging = false;
 let dragStartX, dragStartY;
 
-// Set canvas resolution for better quality
-const canvasResolutionScale = 2; // Adjust the scale factor as needed
-
 // Overlay image URL
 const overlayImageUrl = 'https://i.ibb.co/NFMp0jq/partyhatforweb.png';
 
@@ -30,12 +27,12 @@ setCanvasDimensions();
 window.addEventListener('resize', setCanvasDimensions);
 
 // Load base image when a file is selected
-baseImageUpload.addEventListener('change', function (e) {
+baseImageUpload.addEventListener('change', function(e) {
     loadImage(e.target.files[0], true);
 });
 
 // Load overlay image when "ADD PHAT" button is clicked
-addOverlayBtn.addEventListener('click', function () {
+addOverlayBtn.addEventListener('click', function() {
     loadOverlayImage(overlayImageUrl);
 });
 
@@ -43,21 +40,21 @@ addOverlayBtn.addEventListener('click', function () {
 resizeControl.addEventListener('input', function () {
     if (baseImage && overlayImage) {
         const newScale = resizeControl.value / 100;
-        const centerX = overlayPosition.x + (overlayImage.width * overlayImageScale * canvasResolutionScale) / 2;
-        const centerY = overlayPosition.y + (overlayImage.height * overlayImageScale * canvasResolutionScale) / 2;
-
+        const centerX = overlayPosition.x + (overlayImage.width * overlayImageScale) / 2;
+        const centerY = overlayPosition.y + (overlayImage.height * overlayImageScale) / 2;
+        
         overlayImageScale = newScale;
 
         // Calculate the new position to keep the center of the overlay image fixed
-        overlayPosition.x = centerX - (overlayImage.width * overlayImageScale * canvasResolutionScale) / 2;
-        overlayPosition.y = centerY - (overlayImage.height * overlayImageScale * canvasResolutionScale) / 2;
+        overlayPosition.x = centerX - (overlayImage.width * overlayImageScale) / 2;
+        overlayPosition.y = centerY - (overlayImage.height * overlayImageScale) / 2;
 
         drawImages();
     }
 });
 
 // Handle rotation of the overlay image
-rotateControl.addEventListener('input', function () {
+rotateControl.addEventListener('input', function() {
     overlayRotation = parseInt(rotateControl.value);
     drawImages();
 });
@@ -80,17 +77,17 @@ function preventDocumentScroll(e) {
 // Load image and display it on the canvas
 function loadImage(file, isBase) {
     const reader = new FileReader();
-    reader.onload = function (event) {
+    reader.onload = function(event) {
         const img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             if (isBase) {
                 baseImage = img;
                 scaleAndCenterBaseImage();
                 drawImages();
             }
-        };
+        }
         img.src = event.target.result;
-    };
+    }
     reader.readAsDataURL(file);
 }
 
@@ -101,11 +98,11 @@ function scaleAndCenterBaseImage() {
     let scale;
 
     if (canvasAspectRatio > imageAspectRatio) {
-        scale = (canvas.height * canvasResolutionScale) / baseImage.height;
+        scale = canvas.height / baseImage.height;
         baseImage.width *= scale;
         baseImage.height *= scale;
     } else {
-        scale = (canvas.width * canvasResolutionScale) / baseImage.width;
+        scale = canvas.width / baseImage.width;
         baseImage.width *= scale;
         baseImage.height *= scale;
     }
@@ -120,12 +117,12 @@ function scaleAndCenterBaseImage() {
 function loadOverlayImage(url) {
     const img = new Image();
     img.crossOrigin = "Anonymous";
-    img.onload = function () {
+    img.onload = function() {
         overlayImage = img;
         calculateOverlayScale();
         overlayPosition = { x: 50, y: 50 };
         drawImages();
-    };
+    }
     img.src = url;
 }
 
@@ -160,8 +157,8 @@ function startDragging(e) {
     const mouseX = clientX - rect.left;
     const mouseY = clientY - rect.top;
 
-    if (mouseX >= overlayPosition.x && mouseX <= overlayPosition.x + overlayImage.width * overlayImageScale * canvasResolutionScale &&
-        mouseY >= overlayPosition.y && mouseY <= overlayPosition.y + overlayImage.height * overlayImageScale * canvasResolutionScale) {
+    if (mouseX >= overlayPosition.x && mouseX <= overlayPosition.x + overlayImage.width * overlayImageScale &&
+        mouseY >= overlayPosition.y && mouseY <= overlayPosition.y + overlayImage.height * overlayImageScale) {
         isDragging = true;
         dragStartX = mouseX - overlayPosition.x;
         dragStartY = mouseY - overlayPosition.y;
@@ -199,25 +196,26 @@ function stopDragging() {
     document.removeEventListener('touchmove', preventDocumentScroll);
 }
 
+
 // Draw base and overlay images on the canvas
 function drawImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (baseImage) {
-        ctx.drawImage(baseImage, (canvas.width - baseImage.width) / 2, (canvas.height - baseImage.height) / 2, baseImage.width, baseImage.height);
+                ctx.drawImage(baseImage, (canvas.width - baseImage.width) / 2, (canvas.height - baseImage.height) / 2, baseImage.width, baseImage.height);
     }
 
     if (overlayImage) {
         ctx.save();
-        ctx.translate(overlayPosition.x + overlayImage.width * overlayImageScale * canvasResolutionScale / 2, overlayPosition.y + overlayImage.height * overlayImageScale * canvasResolutionScale / 2);
+        ctx.translate(overlayPosition.x + overlayImage.width * overlayImageScale / 2, overlayPosition.y + overlayImage.height * overlayImageScale / 2);
         ctx.rotate(overlayRotation * Math.PI / 180);
-        ctx.drawImage(overlayImage, -overlayImage.width * overlayImageScale * canvasResolutionScale / 2, -overlayImage.height * overlayImageScale * canvasResolutionScale / 2, overlayImage.width * overlayImageScale * canvasResolutionScale, overlayImage.height * overlayImageScale * canvasResolutionScale);
+        ctx.drawImage(overlayImage, -overlayImage.width * overlayImageScale / 2, -overlayImage.height * overlayImageScale / 2, overlayImage.width * overlayImageScale, overlayImage.height * overlayImageScale);
         ctx.restore();
     }
 }
 
 // Reset button functionality
-resetBtn.addEventListener('click', function () {
+resetBtn.addEventListener('click', function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     baseImage = null;
     overlayImage = null;
@@ -234,19 +232,8 @@ resetBtn.addEventListener('click', function () {
 });
 
 // Download button functionality
-downloadBtn.addEventListener('click', function () {
-    const scaledCanvas = document.createElement('canvas');
-    const scaledCtx = scaledCanvas.getContext('2d');
-
-    // Scale up the canvas for better quality
-    scaledCanvas.width = canvas.width * canvasResolutionScale;
-    scaledCanvas.height = canvas.height * canvasResolutionScale;
-
-    // Scale and draw the content onto the scaled canvas
-    scaledCtx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
-
-    // Convert to data URL and download
-    const dataURL = scaledCanvas.toDataURL('image/png');
+downloadBtn.addEventListener('click', function() {
+    const dataURL = canvas.toDataURL('image/png');
     const downloadLink = document.createElement('a');
     downloadLink.href = dataURL;
     downloadLink.download = 'edited_image.png';
@@ -255,7 +242,7 @@ downloadBtn.addEventListener('click', function () {
 
 // Function to set canvas dimensions dynamically
 function setCanvasDimensions() {
-    const maxWidthMobile = 300 * canvasResolutionScale; // Maximum width for mobile, scaled up
+    const maxWidthMobile = 300; // Maximum width for mobile
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -267,8 +254,8 @@ function setCanvasDimensions() {
         canvas.width = maxWidthMobile;
         canvas.height = maxWidthMobile; // Set the canvas width and height to 300px for mobile
     } else {
-        const maxWidth = 600 * canvasResolutionScale;
-        const maxHeight = 600 * canvasResolutionScale;
+        const maxWidth = 600;
+        const maxHeight = 600;
         const aspectRatio = maxWidth / maxHeight;
 
         // Calculate canvas dimensions based on screen size and aspect ratio
