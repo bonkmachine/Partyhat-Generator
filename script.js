@@ -241,6 +241,8 @@ downloadBtn.addEventListener('click', function () {
 
 // Function to set canvas dimensions dynamically
 function setCanvasDimensions() {
+    const maxWidthMobile = 300; // Maximum width for mobile
+
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
@@ -248,9 +250,8 @@ function setCanvasDimensions() {
     const isMobile = viewportWidth <= 768; // Adjust the breakpoint if necessary
 
     if (isMobile) {
-        // Set the canvas width to 100% and height to auto for mobile
-        canvas.style.width = 'auto';
-        canvas.style.height = 'auto';
+        canvas.width = maxWidthMobile;
+        canvas.height = maxWidthMobile; // Set the canvas width and height to 300px for mobile
     } else {
         const maxWidth = 600;
         const maxHeight = 600;
@@ -269,10 +270,6 @@ function setCanvasDimensions() {
             canvas.width = maxWidth;
             canvas.height = maxHeight;
         }
-
-        // Reset canvas style for non-mobile devices
-        canvas.style.width = '';
-        canvas.style.height = '';
     }
 
     // Redraw images when canvas dimensions change
