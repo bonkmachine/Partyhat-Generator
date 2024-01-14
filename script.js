@@ -250,7 +250,7 @@ function setCanvasDimensions() {
     if (isMobile) {
         // Set the canvas width to 100% and height to auto for mobile
         canvas.style.width = '100%';
-        canvas.style.height = 'auto';
+        canvas.style.height = '100%';
     } else {
         const maxWidth = 600;
         const maxHeight = 600;
