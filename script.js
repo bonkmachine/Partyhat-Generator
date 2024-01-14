@@ -278,4 +278,15 @@ function setCanvasDimensions() {
         calculateOverlayScale();
         drawImages();
     }
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        // Assuming you have a canvas with id 'canvas'
+        var canvas = document.getElementById('canvas');
+        var image = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        var link = document.createElement('a');
+        link.download = 'my-partyhat.png';
+        link.href = image;
+        link.click();
+    });
+});
 }
