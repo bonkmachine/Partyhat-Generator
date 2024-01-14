@@ -241,7 +241,7 @@ downloadBtn.addEventListener('click', function () {
 
 // Function to set canvas dimensions dynamically
 function setCanvasDimensions() {
-    const maxWidthMobile = 300; // Maximum width for mobile
+    const maxWidthMobile = 350; // Maximum width for mobile
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
