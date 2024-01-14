@@ -241,9 +241,7 @@ downloadBtn.addEventListener('click', function () {
 
 // Function to set canvas dimensions dynamically
 function setCanvasDimensions() {
-    const canvasScaleFactor = window.devicePixelRatio || 1; // Get the device's pixel ratio
-
-    const maxWidthMobile = 350 * canvasScaleFactor; // Maximum width for mobile, scaled according to the pixel ratio
+    const maxWidthMobile = 300; // Maximum width for mobile
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -253,10 +251,10 @@ function setCanvasDimensions() {
 
     if (isMobile) {
         canvas.width = maxWidthMobile;
-        canvas.height = maxWidthMobile; // Set the canvas width and height for mobile
+        canvas.height = maxWidthMobile; // Set the canvas width and height to 300px for mobile
     } else {
-        const maxWidth = 600 * canvasScaleFactor; // Maximum width for non-mobile, scaled according to the pixel ratio
-        const maxHeight = 600 * canvasScaleFactor; // Maximum height for non-mobile, scaled according to the pixel ratio
+        const maxWidth = 600;
+        const maxHeight = 600;
         const aspectRatio = maxWidth / maxHeight;
 
         // Calculate canvas dimensions based on screen size and aspect ratio
@@ -281,25 +279,3 @@ function setCanvasDimensions() {
         drawImages();
     }
 }
-
-// Function to export the canvas as an image with better quality
-function exportCanvasImage() {
-    const canvasScaleFactor = window.devicePixelRatio || 1; // Get the device's pixel ratio
-
-    // Create a temporary canvas with higher resolution
-    const exportCanvas = document.createElement("canvas");
-    exportCanvas.width = canvas.width * canvasScaleFactor;
-    exportCanvas.height = canvas.height * canvasScaleFactor;
-
-    const ctx = exportCanvas.getContext("2d");
-
-    // Scale up the content of the original canvas to the temporary canvas
-    ctx.scale(canvasScaleFactor, canvasScaleFactor);
-    ctx.drawImage(canvas, 0, 0);
-
-    // Generate a data URL for the temporary canvas
-    const dataURL = exportCanvas.toDataURL("image/png");
-
-    // You can now use 'dataURL' to save or display the higher-quality image
-}
-
