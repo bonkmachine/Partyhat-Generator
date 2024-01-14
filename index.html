@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="style.css">
+    <title>PARTYHATTER</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="control-panel">
+            <h2>PARTYHAT GENERATOR</h2>
+            <label for="baseImageUpload">Upload Image:</label>
+            <input type="file" id="baseImageUpload">
+            <br>
+            <button id="addOverlayBtn">ADD PHAT</button>
+            <button id="resetBtn">Reset</button>
+            <br>
+            <label for="resizeControl">Resize Partyhat</label>
+            <input type="range" id="resizeControl" min="1" max="100" step="1" value="50">
+            <br>
+            <label for="rotateControl">Rotate Partyhat</label>
+            <input type="range" id="rotateControl" min="0" max="360" step="1" value="180">
+            <br>
+            <button id="downloadBtn">Download </button>
+            <br>
+        </div>
+        <div class="canvas-container">
+            <canvas id="imageCanvas"></canvas>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
