@@ -43,14 +43,14 @@ addOverlayBtn.addEventListener('click', function () {
 resizeControl.addEventListener('input', function () {
     if (baseImage && overlayImage) {
         const newScale = resizeControl.value / 100;
-        const centerX = overlayPosition.x + (overlayImage.width * overlayImageScale) / 2;
-        const centerY = overlayPosition.y + (overlayImage.height * overlayImageScale) / 2;
+        const centerX = overlayPosition.x + (overlayImage.width * overlayImageScale * canvasResolutionScale) / 2;
+        const centerY = overlayPosition.y + (overlayImage.height * overlayImageScale * canvasResolutionScale) / 2;
 
         overlayImageScale = newScale;
 
         // Calculate the new position to keep the center of the overlay image fixed
-        overlayPosition.x = centerX - (overlayImage.width * overlayImageScale) / 2;
-        overlayPosition.y = centerY - (overlayImage.height * overlayImageScale) / 2;
+        overlayPosition.x = centerX - (overlayImage.width * overlayImageScale * canvasResolutionScale) / 2;
+        overlayPosition.y = centerY - (overlayImage.height * overlayImageScale * canvasResolutionScale) / 2;
 
         drawImages();
     }
@@ -101,11 +101,11 @@ function scaleAndCenterBaseImage() {
     let scale;
 
     if (canvasAspectRatio > imageAspectRatio) {
-        scale = canvas.height / baseImage.height;
+        scale = (canvas.height * canvasResolutionScale) / baseImage.height;
         baseImage.width *= scale;
         baseImage.height *= scale;
     } else {
-        scale = canvas.width / baseImage.width;
+        scale = (canvas.width * canvasResolutionScale) / baseImage.width;
         baseImage.width *= scale;
         baseImage.height *= scale;
     }
@@ -160,8 +160,8 @@ function startDragging(e) {
     const mouseX = clientX - rect.left;
     const mouseY = clientY - rect.top;
 
-    if (mouseX >= overlayPosition.x && mouseX <= overlayPosition.x + overlayImage.width * overlayImageScale &&
-        mouseY >= overlayPosition.y && mouseY <= overlayPosition.y + overlayImage.height * overlayImageScale) {
+    if (mouseX >= overlayPosition.x && mouseX <= overlayPosition.x + overlayImage.width * overlayImageScale * canvasResolutionScale &&
+        mouseY >= overlayPosition.y && mouseY <= overlayPosition.y + overlayImage.height * overlayImageScale * canvasResolutionScale) {
         isDragging = true;
         dragStartX = mouseX - overlayPosition.x;
         dragStartY = mouseY - overlayPosition.y;
@@ -209,9 +209,9 @@ function drawImages() {
 
     if (overlayImage) {
         ctx.save();
-        ctx.translate(overlayPosition.x + overlayImage.width * overlayImageScale / 2, overlayPosition.y + overlayImage.height * overlayImageScale / 2);
+        ctx.translate(overlayPosition.x + overlayImage.width * overlayImageScale * canvasResolutionScale / 2, overlayPosition.y + overlayImage.height * overlayImageScale * canvasResolutionScale / 2);
         ctx.rotate(overlayRotation * Math.PI / 180);
-        ctx.drawImage(overlayImage, -overlayImage.width * overlayImageScale / 2, -overlayImage.height * overlayImageScale / 2, overlayImage.width * overlayImageScale, overlayImage.height * overlayImageScale);
+        ctx.drawImage(overlayImage, -overlayImage.width * overlayImageScale * canvasResolutionScale / 2, -overlayImage.height * overlayImageScale * canvasResolutionScale / 2, overlayImage.width * overlayImageScale * canvasResolutionScale, overlayImage.height * overlayImageScale * canvasResolutionScale);
         ctx.restore();
     }
 }
@@ -237,14 +237,14 @@ resetBtn.addEventListener('click', function () {
 downloadBtn.addEventListener('click', function () {
     const scaledCanvas = document.createElement('canvas');
     const scaledCtx = scaledCanvas.getContext('2d');
-    
+
     // Scale up the canvas for better quality
     scaledCanvas.width = canvas.width * canvasResolutionScale;
     scaledCanvas.height = canvas.height * canvasResolutionScale;
-    
+
     // Scale and draw the content onto the scaled canvas
     scaledCtx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
-    
+
     // Convert to data URL and download
     const dataURL = scaledCanvas.toDataURL('image/png');
     const downloadLink = document.createElement('a');
