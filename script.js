@@ -1,3 +1,5 @@
+'use strict';
+
 // Get references to HTML elements
 const baseImageUpload = document.getElementById('baseImageUpload');
 const addOverlayBtn = document.getElementById('addOverlayBtn');
@@ -231,51 +233,12 @@ resetBtn.addEventListener('click', function() {
     drawImages();
 });
 
-// Download button functionality
 downloadBtn.addEventListener('click', function() {
-    // Create a larger canvas for upscaling
-    const enlargedCanvas = document.createElement('canvas');
-    const enlargedCtx = enlargedCanvas.getContext('2d');
-    enlargedCanvas.width = canvas.width * 2;
-    enlargedCanvas.height = canvas.height * 2;
-
-    // Draw base and overlay images on the enlarged canvas with the desired scaling
-    if (baseImage) {
-        const baseImageScale = 2; // Upscale by 2x
-        const baseImageX = (enlargedCanvas.width - baseImage.width * baseImageScale) / 2;
-        const baseImageY = (enlargedCanvas.height - baseImage.height * baseImageScale) / 2;
-        enlargedCtx.drawImage(baseImage, baseImageX, baseImageY, baseImage.width * baseImageScale, baseImage.height * baseImageScale);
-    }
-
-    if (overlayImage) {
-        const overlayImageX = overlayPosition.x * 2;
-        const overlayImageY = overlayPosition.y * 2;
-        const overlayImageWidth = overlayImage.width * overlayImageScale * 2;
-        const overlayImageHeight = overlayImage.height * overlayImageScale * 2;
-
-        enlargedCtx.save();
-        enlargedCtx.translate(
-            overlayImageX + overlayImageWidth / 2,
-            overlayImageY + overlayImageHeight / 2
-        );
-        enlargedCtx.rotate(overlayRotation * Math.PI / 180);
-        enlargedCtx.drawImage(
-            overlayImage,
-            -overlayImageWidth / 2,
-            -overlayImageHeight / 2,
-            overlayImageWidth,
-            overlayImageHeight
-        );
-        enlargedCtx.restore();
-    }
-
-    // Export the enlarged canvas as an image
-    const dataURL = enlargedCanvas.toDataURL('image/png');
-    const downloadLink = document.createElement('a');
-    downloadLink.href = dataURL;
-    downloadLink.download = 'enlarged_image.png';
-    downloadLink.click();
+    // Create a new window and display the image
+    const newWindow = window.open();
+    newWindow.document.write('<img src="' + canvas.toDataURL('image/png') + '" alt="phatted_image">');
 });
+
 
 
 // Function to set canvas dimensions dynamically
