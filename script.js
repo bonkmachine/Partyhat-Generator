@@ -421,11 +421,34 @@ downloadBtn.addEventListener('click', function() {
 
     // Export the enlarged canvas as an image (PNG format)
     const dataURL = enlargedCanvas.toDataURL('image/png');
-    
-    // Open the image in a new tab/window
-    const newTab = window.open();
-    newTab.document.write('<img src="' + dataURL + '" alt="enlarged_image" />');
+
+    // Create a blob from the data URL
+    const blob = dataURLtoBlob(dataURL);
+
+    // Create a download link and trigger a click event to download the image
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = 'enlarged_image.png';
+    downloadLink.click();
 });
+
+// Function to convert data URL to blob
+function dataURLtoBlob(dataURL) {
+    const parts = dataURL.split(';base64,');
+    const contentType = parts[0].split(':')[1];
+    const byteCharacters = atob(parts[1]);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
 
 
 
