@@ -272,7 +272,7 @@ downloadBtn.addEventListener('click', function() {
     }
 
     // Export the enlarged canvas as an image (JPG format)
-    const dataURL = enlargedCanvas.toDataURL('image/jpeg', 0.8); // Use JPEG format with 80% quality
+    const dataURL = enlargedCanvas.toDataURL('image/png', 0.8); // Use JPEG format with 80% quality
     
     // Open the image in a new tab/window
     const newTab = window.open();
