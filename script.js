@@ -424,7 +424,7 @@ downloadBtn.addEventListener('click', function() {
     
     // Open the image in a new tab/window
     const newTab = window.open();
-    newTab.document.write('<img src="' + dataURL + '" alt="phatted_image" />');
+    newTab.document.write('<img src="' + dataURL + '" alt="enlarged_image" />');
 });
 
 
