@@ -233,12 +233,21 @@ resetBtn.addEventListener('click', function() {
     drawImages();
 });
 
+// Download button functionality
 downloadBtn.addEventListener('click', function() {
-    // Create a new window and display the image
+    // Create a new window and display the image with upscaling
     const newWindow = window.open();
-    newWindow.document.write('<img src="' + canvas.toDataURL('image/png') + '" alt="phatted_image">');
-});
+    const enlargedCanvas = document.createElement('canvas');
+    const enlargedCtx = enlargedCanvas.getContext('2d');
+    enlargedCanvas.width = canvas.width * 2;
+    enlargedCanvas.height = canvas.height * 2;
 
+    // Draw the image on the enlarged canvas
+    enlargedCtx.drawImage(canvas, 0, 0, enlargedCanvas.width, enlargedCanvas.height);
+
+    // Display the enlarged image in the new window
+    newWindow.document.write('<img src="' + enlargedCanvas.toDataURL('image/png') + '" alt="phatted_image">');
+});
 
 
 // Function to set canvas dimensions dynamically
