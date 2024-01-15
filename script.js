@@ -234,29 +234,26 @@ resetBtn.addEventListener('click', function() {
 });
 
 downloadBtn.addEventListener('click', function() {
-    // Create a larger canvas for upscaling
+    // Create a larger canvas for upscaling (3x on mobile, 2x on desktop)
+    const scaleFactor = window.innerWidth <= 768 ? 3 : 2;
     const enlargedCanvas = document.createElement('canvas');
     const enlargedCtx = enlargedCanvas.getContext('2d');
-    enlargedCanvas.width = canvas.width * (isMobile ? 3 : 2);
-    enlargedCanvas.height = canvas.height * (isMobile ? 3 : 2);
-
-    // Fill the background with white for JPG export
-    enlargedCtx.fillStyle = 'white';
-    enlargedCtx.fillRect(0, 0, enlargedCanvas.width, enlargedCanvas.height);
+    enlargedCanvas.width = canvas.width * scaleFactor;
+    enlargedCanvas.height = canvas.height * scaleFactor;
 
     // Draw base and overlay images on the enlarged canvas with the desired scaling
     if (baseImage) {
-        const baseImageScale = isMobile ? 3 : 2; // Upscale by 3x on mobile, 2x on others
+        const baseImageScale = scaleFactor; // Upscale by 3x on mobile, 2x on desktop
         const baseImageX = (enlargedCanvas.width - baseImage.width * baseImageScale) / 2;
         const baseImageY = (enlargedCanvas.height - baseImage.height * baseImageScale) / 2;
         enlargedCtx.drawImage(baseImage, baseImageX, baseImageY, baseImage.width * baseImageScale, baseImage.height * baseImageScale);
     }
 
     if (overlayImage) {
-        const overlayImageX = overlayPosition.x * (isMobile ? 3 : 2);
-        const overlayImageY = overlayPosition.y * (isMobile ? 3 : 2);
-        const overlayImageWidth = overlayImage.width * overlayImageScale * (isMobile ? 3 : 2);
-        const overlayImageHeight = overlayImage.height * overlayImageScale * (isMobile ? 3 : 2);
+        const overlayImageX = overlayPosition.x * scaleFactor;
+        const overlayImageY = overlayPosition.y * scaleFactor;
+        const overlayImageWidth = overlayImage.width * overlayImageScale * scaleFactor;
+        const overlayImageHeight = overlayImage.height * overlayImageScale * scaleFactor;
 
         enlargedCtx.save();
         enlargedCtx.translate(
@@ -274,9 +271,9 @@ downloadBtn.addEventListener('click', function() {
         enlargedCtx.restore();
     }
 
-    // Export the enlarged canvas as a JPG image
-    const dataURL = enlargedCanvas.toDataURL('image/jpeg', 0.9); // Quality set to 0.9
-
+    // Export the enlarged canvas as an image (JPG format)
+    const dataURL = enlargedCanvas.toDataURL('image/jpeg', 0.8); // Use JPEG format with 80% quality
+    
     // Open the image in a new tab/window
     const newTab = window.open();
     newTab.document.write('<img src="' + dataURL + '" alt="enlarged_image" />');
