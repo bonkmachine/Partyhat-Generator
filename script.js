@@ -233,21 +233,51 @@ resetBtn.addEventListener('click', function() {
     drawImages();
 });
 
-// Download button functionality
 downloadBtn.addEventListener('click', function() {
-    // Create a new window and display the image with upscaling
-    const newWindow = window.open();
+    // Create a larger canvas for upscaling
     const enlargedCanvas = document.createElement('canvas');
     const enlargedCtx = enlargedCanvas.getContext('2d');
     enlargedCanvas.width = canvas.width * 2;
     enlargedCanvas.height = canvas.height * 2;
 
-    // Draw the image on the enlarged canvas
-    enlargedCtx.drawImage(canvas, 0, 0, enlargedCanvas.width, enlargedCanvas.height);
+    // Draw base and overlay images on the enlarged canvas with the desired scaling
+    if (baseImage) {
+        const baseImageScale = 2; // Upscale by 2x
+        const baseImageX = (enlargedCanvas.width - baseImage.width * baseImageScale) / 2;
+        const baseImageY = (enlargedCanvas.height - baseImage.height * baseImageScale) / 2;
+        enlargedCtx.drawImage(baseImage, baseImageX, baseImageY, baseImage.width * baseImageScale, baseImage.height * baseImageScale);
+    }
 
-    // Display the enlarged image in the new window
-    newWindow.document.write('<img src="' + enlargedCanvas.toDataURL('image/png') + '" alt="phatted_image">');
+    if (overlayImage) {
+        const overlayImageX = overlayPosition.x * 2;
+        const overlayImageY = overlayPosition.y * 2;
+        const overlayImageWidth = overlayImage.width * overlayImageScale * 2;
+        const overlayImageHeight = overlayImage.height * overlayImageScale * 2;
+
+        enlargedCtx.save();
+        enlargedCtx.translate(
+            overlayImageX + overlayImageWidth / 2,
+            overlayImageY + overlayImageHeight / 2
+        );
+        enlargedCtx.rotate(overlayRotation * Math.PI / 180);
+        enlargedCtx.drawImage(
+            overlayImage,
+            -overlayImageWidth / 2,
+            -overlayImageHeight / 2,
+            overlayImageWidth,
+            overlayImageHeight
+        );
+        enlargedCtx.restore();
+    }
+
+    // Export the enlarged canvas as an image
+    const dataURL = enlargedCanvas.toDataURL('image/png');
+    
+    // Open the image in a new tab/window
+    const newTab = window.open();
+    newTab.document.write('<img src="' + dataURL + '" alt="enlarged_image" />');
 });
+
 
 
 // Function to set canvas dimensions dynamically
